@@ -49,6 +49,14 @@ extension Color {
             self = .blue
         case "clear":
             self = .clear
+        case "purple":
+            self = .purple
+        case "pink":
+            self = .pink
+        case "cyan":
+            self = .cyan
+        case "indigo":
+            self = .indigo
         default:
             return nil
         }

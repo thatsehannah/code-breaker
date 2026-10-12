@@ -13,7 +13,7 @@ struct BlockView: View {
     
     // MARK: Data owned by me
     var isEmoji: Bool {
-        Color(name: block) == nil
+        Color(name: block) == nil && block.count == 1
     }
     
     // MARK: - Body
@@ -21,7 +21,7 @@ struct BlockView: View {
     
     var body: some View {
         blockShape
-            .foregroundStyle(isEmoji ? Color.clear : (Color(name: block) ?? Color.clear))
+            .foregroundStyle(isEmoji ? Color.clear : (Color(name: block) ?? Color.gray))
             .contentShape(blockShape)
             .aspectRatio(1, contentMode: .fit)
             .overlay {

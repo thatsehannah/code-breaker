@@ -13,7 +13,7 @@ struct BlockChooser: View {
     let choices: [Block]
     
     // MARK: Data Out Function
-    let onSelect: ((Block) -> Void)?
+    var onSelect: ((Block) -> Void)?
     
     // MARK: - Body
     var body: some View {

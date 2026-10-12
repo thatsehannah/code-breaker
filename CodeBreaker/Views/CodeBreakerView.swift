@@ -61,7 +61,7 @@ struct CodeBreakerView: View {
     func restartGame() {
         withAnimation(.restart) {
             restarting = game.isOver
-            game = CodeBreaker()
+            game.restartGame()
             selection = 0
         } completion: {
             withAnimation(.restart) {

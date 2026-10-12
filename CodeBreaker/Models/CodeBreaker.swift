@@ -19,8 +19,9 @@ struct CodeBreaker {
     var startTime: Date = Date.now
     var endTime: Date?
     
-    init() {
-        self.blockChoices = Array(POOL.randomElement()!.shuffled().prefix(Int.random(in: 3...6)))
+    init(blockChoices: [Block] = ["🔥", "red", "🥶", "indigo"]) {
+        self.blockChoices = blockChoices
+//        self.blockChoices = blockChoices.shuffled().prefix(Int.random(in: 3..6))
         self.masterCode = Code(kind: .master(isHidden: true), blocks: Array(repeating: Code.empty, count: self.blockChoices.count))
         self.guess = Code(kind: .guess, blocks: Array(repeating: Code.empty, count: self.blockChoices.count))
         masterCode.createMasterCode(from: self.blockChoices)
@@ -32,6 +33,17 @@ struct CodeBreaker {
     
     var isOver: Bool {
         attempts.first?.blocks == masterCode.blocks
+    }
+    
+    mutating func restartGame() {
+        masterCode.kind = .master(isHidden: true)
+        masterCode.createMasterCode(from: blockChoices)
+        guess.resetGuess()
+        attempts.removeAll()
+        startTime = .now
+        endTime = nil
+        
+        print(masterCode)
     }
     
     mutating func submitGuess() {
