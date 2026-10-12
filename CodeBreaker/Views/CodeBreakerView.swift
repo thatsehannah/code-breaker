@@ -9,19 +9,19 @@ import SwiftUI
 
 struct CodeBreakerView: View {
     // MARK: Data Owned by Me
-    @State private var game = CodeBreaker(isEmojiGame: Bool.random())
+    @State private var game = CodeBreaker()
     @State private var selection: Int = 0
     @State private var restarting: Bool = false
-    @State private var hideMostrRecentResult = false
+    @State private var hideMostRecentResult = false
     
     // MARK: - Body
     var body: some View {
         VStack {
             CodeView(code: game.masterCode) {
-                ElapsedTimeView(startTime: game.startTime, endTime: game.endTime)
-                    .flexibleSystemFont()
-                    .monospaced()
-                    .lineLimit(1) // caps the max number of lines this view can occupy
+//                ElapsedTimeView(startTime: game.startTime, endTime: game.endTime)
+//                    .flexibleSystemFont()
+//                    .monospaced()
+//                    .lineLimit(1) // caps the max number of lines this view can occupy
             }
             ScrollView {
                 if !game.isOver {
@@ -32,10 +32,10 @@ struct CodeBreakerView: View {
                     .animation(nil, value: game.attempts.count)
                     .opacity(restarting ? 0 : 1)
                 }
-                ForEach(game.attempts.indices.reversed(), id: \.self) { index in
-                    CodeView(code: game.attempts[index]) {
-                        let showResults = !hideMostrRecentResult || index != game.attempts.count - 1
-                        if showResults, let results = game.attempts[index].comparisonResults {
+                ForEach(game.attempts, id: \.blocks) { attempt in
+                    CodeView(code: attempt) {
+                        let showResults = !hideMostRecentResult || attempt.blocks != game.attempts.first?.blocks
+                        if showResults, let results = attempt.comparisonResults {
                             MatchOptionResults(results: results)
                         }
                     }
@@ -61,7 +61,7 @@ struct CodeBreakerView: View {
     func restartGame() {
         withAnimation(.restart) {
             restarting = game.isOver
-            game = CodeBreaker(isEmojiGame: Bool.random())
+            game = CodeBreaker()
             selection = 0
         } completion: {
             withAnimation(.restart) {
@@ -75,10 +75,10 @@ struct CodeBreakerView: View {
         withAnimation(.guess) {
             game.submitGuess()
             selection = 0
-            hideMostrRecentResult = true
+            hideMostRecentResult = true
         } completion: {
             withAnimation(.guess) {
-                hideMostrRecentResult = false
+                hideMostRecentResult = false
             }
         }
     }

@@ -9,21 +9,18 @@ import Foundation
 
 typealias Block = String
 
+let POOL: [[String]] = [["😭", "😍", "🥺", "🤬", "😃", "😏"], ["green", "yellow", "red", "orange", "black", "blue"]]
+
 struct CodeBreaker {
     var masterCode: Code
     var guess: Code
     var attempts: [Code] = []
     let blockChoices: [Block] // TODO: change this to a Set
-    var isEmojiGame: Bool
     var startTime: Date = Date.now
     var endTime: Date?
     
-    init(isEmojiGame: Bool) {
-        self.isEmojiGame = isEmojiGame
-        
-        let pool = isEmojiGame ? ["😭", "😍", "🥺", "🤬", "😃", "😏"] : ["green", "yellow", "red", "orange", "black", "blue"]
-        
-        self.blockChoices = Array(pool.shuffled().prefix(Int.random(in: 3...6)))
+    init() {
+        self.blockChoices = Array(POOL.randomElement()!.shuffled().prefix(Int.random(in: 3...6)))
         self.masterCode = Code(kind: .master(isHidden: true), blocks: Array(repeating: Code.empty, count: self.blockChoices.count))
         self.guess = Code(kind: .guess, blocks: Array(repeating: Code.empty, count: self.blockChoices.count))
         masterCode.createMasterCode(from: self.blockChoices)
@@ -34,17 +31,17 @@ struct CodeBreaker {
     }
     
     var isOver: Bool {
-        attempts.last?.blocks == masterCode.blocks
+        attempts.first?.blocks == masterCode.blocks
     }
     
     mutating func submitGuess() {
-        if guess.blocks.count(where: { block in block == Code.empty}) == blockChoices.count {
-            return
-        }
+        guard guess.blocks.count(where: { block in block == Code.empty}) != blockChoices.count else { return }
+        
+        guard !attempts.contains(where: { $0.blocks == guess.blocks}) else { return }
         
         var attempt = guess
         attempt.kind = .attempt(guess.compareBlocks(against: masterCode))
-        attempts.append(attempt)
+        attempts.insert(attempt, at: 0)
         
         guess.resetGuess()
         
