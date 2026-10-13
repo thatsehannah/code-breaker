@@ -12,6 +12,7 @@ typealias Block = String
 let POOL: [[String]] = [["😭", "😍", "🥺", "🤬", "😃", "😏"], ["green", "yellow", "red", "orange", "black", "blue"]]
 
 struct CodeBreaker {
+    var name: String
     var masterCode: Code
     var guess: Code
     var attempts: [Code] = []
@@ -19,7 +20,8 @@ struct CodeBreaker {
     var startTime: Date = Date.now
     var endTime: Date?
     
-    init(blockChoices: [Block] = ["🔥", "red", "🥶", "indigo"]) {
+    init(blockChoices: [Block] = ["🔥", "red", "🥶", "indigo"], name: String = "Code Breaker") {
+        self.name = name
         self.blockChoices = blockChoices
 //        self.blockChoices = blockChoices.shuffled().prefix(Int.random(in: 3..6))
         self.masterCode = Code(kind: .master(isHidden: true), blocks: Array(repeating: Code.empty, count: self.blockChoices.count))

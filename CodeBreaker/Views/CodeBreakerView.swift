@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct CodeBreakerView: View {
+    // MARK: Data Shared with Me
+    @Binding var game: CodeBreaker
+    
     // MARK: Data Owned by Me
-    @State private var game = CodeBreaker()
+    
     @State private var selection: Int = 0
     @State private var restarting: Bool = false
     @State private var hideMostRecentResult = false
@@ -17,12 +20,7 @@ struct CodeBreakerView: View {
     // MARK: - Body
     var body: some View {
         VStack {
-            CodeView(code: game.masterCode) {
-//                ElapsedTimeView(startTime: game.startTime, endTime: game.endTime)
-//                    .flexibleSystemFont()
-//                    .monospaced()
-//                    .lineLimit(1) // caps the max number of lines this view can occupy
-            }
+            CodeView(code: game.masterCode)
             ScrollView {
                 if !game.isOver {
                     CodeView(code: game.guess, selection: $selection) {
@@ -47,7 +45,17 @@ struct CodeBreakerView: View {
                     .transition(.blockChooserTransition) // point of origin is the upper left corner, so a positive y is down, and negative y is up
             }
             
-            Button("Restart Game", systemImage: "arrow.circlepath", action: restartGame)
+            
+        }
+        .toolbar { // it's parent view must be wrapped in a NavigationStack for this to show up
+            ToolbarItem(placement: .primaryAction) { // if one thing in toolbar is wrapped with ToolbarItem, all must be wrapped in a ToolbarItem
+                Button("Restart Game", systemImage: "arrow.circlepath", action: restartGame)
+            }
+            ToolbarItem(placement: .automatic) {
+                ElapsedTimeView(startTime: game.startTime, endTime: game.endTime)
+                    .monospaced()
+                    .lineLimit(1) // caps the max number of lines this view can occupy
+            }
         }
         .padding()
     }
@@ -97,5 +105,8 @@ struct CodeBreakerView: View {
 
 
 #Preview {
-    CodeBreakerView()
+    @Previewable @State var game = CodeBreaker() // @State variables should be private UNLESS using @Previewable
+    NavigationStack {
+        CodeBreakerView(game: $game)
+    }
 }
