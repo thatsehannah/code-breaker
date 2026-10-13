@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CodeBreakerView: View {
     // MARK: Data Shared with Me
-    @Binding var game: CodeBreaker
+    let game: CodeBreaker // since CodeBreaker is a class now, the pointer itself (since classes are passed by reference) is a constant, doesn't mean the object itself is a constant (can still change the properties)
     
     // MARK: Data Owned by Me
     
@@ -41,7 +41,7 @@ struct CodeBreakerView: View {
                 }
             }
             if (!game.isOver) {
-                BlockChooser(choices: game.blockChoices, onSelect: changeBlockAtSelection)
+                BlockChooserView(choices: game.blockChoices, onSelect: changeBlockAtSelection)
                     .transition(.blockChooserTransition) // point of origin is the upper left corner, so a positive y is down, and negative y is up
             }
             
@@ -107,6 +107,6 @@ struct CodeBreakerView: View {
 #Preview {
     @Previewable @State var game = CodeBreaker() // @State variables should be private UNLESS using @Previewable
     NavigationStack {
-        CodeBreakerView(game: $game)
+        CodeBreakerView(game: game)
     }
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BlockChooser: View {
+struct BlockChooserView: View {
     
     // MARK: Data In
     let choices: [Block]

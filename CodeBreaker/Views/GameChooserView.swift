@@ -13,12 +13,27 @@ struct GameChooserView: View {
     
     var body: some View {
         NavigationStack {
-            List($games, id: \.blockChoices, editActions: [.delete, .move]) { $game in //adding $ to the state object makes it bindable
-                NavigationLink {
-                    CodeBreakerView(game: $game)
-                } label: {
-                    GameSummary(game: game)
+            List {
+                ForEach(games) { game in // expose the ForEach like this when your model (i.e. game) is a class; also when a class (or struct) conforms to Identifiable, we don't need to pass in the id param for ForEach
+                    NavigationLink(value: game) {
+                        GameSummary(game: game)
+                    }
+                    NavigationLink(value: game.masterCode.blocks) {
+                        Text("Cheat")
+                    }
                 }
+                .onDelete { offsets in // this and .onMove are used instead of editActions (in the List init) if your model is a class
+                    games.remove(atOffsets: offsets)
+                }
+                .onMove { offset, destination in
+                    games.move(fromOffsets: offset, toOffset: destination)
+                }
+            }
+            .navigationDestination(for: CodeBreaker.self) { game in // this corresponds to the NavigationLink that has a value of type CodeBreaker, and it displays the view that you want to show for when that navigation link is pressed.
+                CodeBreakerView(game: game)
+            }
+            .navigationDestination(for: [Block].self) { blocks in // this corresponds to the NavigationLink that has a value of type array of Blocks and shows the BlockChooserView for it
+                BlockChooserView(choices: blocks)
             }
             .listStyle(.plain)
             .toolbar { // Navigation Stack puts the toolbar at the top. this is also necessary if you have editActions defined in List (editActions only work on bindable arguments, e.g $game -> fact check this)

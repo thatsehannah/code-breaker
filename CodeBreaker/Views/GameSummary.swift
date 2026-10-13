@@ -13,7 +13,7 @@ struct GameSummary: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(game.name).font(.title)
-            BlockChooser(choices: game.blockChoices)
+            BlockChooserView(choices: game.blockChoices)
                 .frame(maxHeight: 50)
             Text("^[\(game.attempts.count) attempt](inflect: true)") // ^[expression](inflect: true) pluralizes something that is not plural 😱
         }

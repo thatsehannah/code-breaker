@@ -9,21 +9,18 @@ import Foundation
 
 typealias Block = String
 
-let POOL: [[String]] = [["😭", "😍", "🥺", "🤬", "😃", "😏"], ["green", "yellow", "red", "orange", "black", "blue"]]
-
-struct CodeBreaker {
+@Observable class CodeBreaker { // whenever we have a class in our model, make it @Observable
     var name: String
     var masterCode: Code
     var guess: Code
     var attempts: [Code] = []
-    let blockChoices: [Block] // TODO: change this to a Set
+    let blockChoices: [Block]
     var startTime: Date = Date.now
     var endTime: Date?
     
     init(blockChoices: [Block] = ["🔥", "red", "🥶", "indigo"], name: String = "Code Breaker") {
         self.name = name
         self.blockChoices = blockChoices
-//        self.blockChoices = blockChoices.shuffled().prefix(Int.random(in: 3..6))
         self.masterCode = Code(kind: .master(isHidden: true), blocks: Array(repeating: Code.empty, count: self.blockChoices.count))
         self.guess = Code(kind: .guess, blocks: Array(repeating: Code.empty, count: self.blockChoices.count))
         masterCode.createMasterCode(from: self.blockChoices)
@@ -37,7 +34,7 @@ struct CodeBreaker {
         attempts.first?.blocks == masterCode.blocks
     }
     
-    mutating func restartGame() {
+    func restartGame() {
         masterCode.kind = .master(isHidden: true)
         masterCode.createMasterCode(from: blockChoices)
         guess.resetGuess()
@@ -48,7 +45,7 @@ struct CodeBreaker {
         print(masterCode)
     }
     
-    mutating func submitGuess() {
+    func submitGuess() {
         guard guess.blocks.count(where: { block in block == Code.empty}) != blockChoices.count else { return }
         
         guard !attempts.contains(where: { $0.blocks == guess.blocks}) else { return }
@@ -65,12 +62,12 @@ struct CodeBreaker {
         }
     }
     
-    mutating func setGuessBlock(_ block: Block, at index: Int) {
+    func setGuessBlock(_ block: Block, at index: Int) {
         guard guess.blocks.indices.contains(index) else { return }
         guess.blocks[index] = block
     }
     
-    mutating func changeGuessBlock(at index: Int) {
+    func changeGuessBlock(at index: Int) {
         let existingBlock = guess.blocks[index]
         if let indexOfExistingBlockInBlockChoices = blockChoices.firstIndex(of: existingBlock) {
             let newBlock = blockChoices[(indexOfExistingBlockInBlockChoices + 1) % blockChoices.count]
@@ -79,6 +76,19 @@ struct CodeBreaker {
             guess.blocks[index] = blockChoices.first ?? Code.empty
         }
     }
+}
+
+// best practice to have conformance logic in an extension
+extension CodeBreaker: Identifiable, Hashable, Equatable { // Making a class Identifiable synthesizes it (i.e. creates an id property) because the id is actually the pointer
+    
+    static func == (lhs: CodeBreaker, rhs: CodeBreaker) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id) //Identifiable requires the id property be hashable
+    }
+    
 }
 
 
