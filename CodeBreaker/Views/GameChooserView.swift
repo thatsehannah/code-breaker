@@ -19,12 +19,24 @@ struct GameChooserView: View {
                     NavigationLink(value: game) {
                         GameSummary(game: game)
                     }
+                    .contextMenu { // shows a right click menu on Mac (activates by pressing on an item on iOS)
+                        Button("Delete", systemImage: "minus.circle", role: .destructive) {
+                            withAnimation {
+                                games.removeAll { $0 == game }
+                            }
+                        }
+                    }
                 }
                 .onDelete { offsets in // this and .onMove are used instead of editActions (in the List init) if your model is a class
                     games.remove(atOffsets: offsets)
                 }
                 .onMove { offset, destination in
                     games.move(fromOffsets: offset, toOffset: destination)
+                }
+            }
+            .onChange(of: games) {
+                if let selection, !games.contains(selection) {
+                    self.selection = nil
                 }
             }
             .navigationTitle("Code Breaker")
