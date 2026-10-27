@@ -21,8 +21,8 @@ typealias Block = String
     init(blockChoices: [Block] = ["🔥", "red", "🥶", "indigo"], name: String = "Code Breaker") {
         self.name = name
         self.blockChoices = blockChoices
-        self.masterCode = Code(kind: .master(isHidden: true), blocks: Array(repeating: Code.empty, count: self.blockChoices.count))
-        self.guess = Code(kind: .guess, blocks: Array(repeating: Code.empty, count: self.blockChoices.count))
+        self.masterCode = Code(kind: .master(isHidden: true), blocks: Array(repeating: Code.empty, count: 4))
+        self.guess = Code(kind: .guess, blocks: Array(repeating: Code.empty, count: 4))
         masterCode.createMasterCode(from: self.blockChoices)
         startTime = .now
         endTime = nil

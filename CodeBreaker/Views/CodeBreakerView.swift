@@ -43,6 +43,7 @@ struct CodeBreakerView: View {
             if (!game.isOver) {
                 BlockChooserView(choices: game.blockChoices, onSelect: changeBlockAtSelection)
                     .transition(.blockChooserTransition) // point of origin is the upper left corner, so a positive y is down, and negative y is up
+                    .frame(maxHeight: 90)
             }
             
             
