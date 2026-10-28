@@ -33,33 +33,29 @@ extension AnyTransition {
 }
 
 extension Color {
+    static let palette: [String: Color] = [
+        "green": .green,
+        "yellow": .yellow,
+        "red": .red,
+        "orange": .orange,
+        "black": .black,
+        "blue": .blue,
+        "clear": .clear,
+        "purple": .purple,
+        "pink": .pink,
+        "cyan": .cyan,
+        "indigo": .indigo,
+        "brown": .brown,
+        "teal": .teal,
+    ]
+    
     init?(name: String) {
-        switch name {
-        case "green":
-            self = .green
-        case "yellow":
-            self = .yellow
-        case "red":
-            self = .red
-        case "orange":
-            self = .orange
-        case "black":
-            self = .black
-        case "blue":
-            self = .blue
-        case "clear":
-            self = .clear
-        case "purple":
-            self = .purple
-        case "pink":
-            self = .pink
-        case "cyan":
-            self = .cyan
-        case "indigo":
-            self = .indigo
-        default:
-            return nil
-        }
+        guard let color = Color.palette[name] else { return nil }
+        self = color
+    }
+    
+    var name: String? {
+        Color.palette.first { $0.value == self }?.key
     }
 }
 

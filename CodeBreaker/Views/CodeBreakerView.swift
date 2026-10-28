@@ -63,7 +63,7 @@ struct CodeBreakerView: View {
     
     func changeBlockAtSelection(to block: Block) {
         game.setGuessBlock(block, at: selection)
-        selection = (selection + 1) % game.blockChoices.count
+        selection = (selection + 1) % game.guess.blocks.count
         
     }
     

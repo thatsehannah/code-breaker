@@ -22,6 +22,10 @@ struct GameListView: View {
         }
     }
     
+    func addNewGame(name: String, blockChoices: [Block]) {
+        games.append(CodeBreaker(blockChoices: blockChoices, name: name))
+    }
+    
     var body: some View {
         List(selection: $selection) {
             ForEach(games) { game in // expose the ForEach like this when your model (i.e. game) is a class; also when a class (or struct) conforms to Identifiable, we don't need to pass in the id param for ForEach
@@ -51,6 +55,11 @@ struct GameListView: View {
         
         .listStyle(.plain)
         .toolbar { // Navigation Stack puts the toolbar at the top. this is also necessary if you have editActions defined in List (editActions only work on bindable arguments, e.g $game -> fact check this)
+            Button("Add Game", systemImage: "plus") {
+                withAnimation {
+                    addNewGame(name: "Untitled", blockChoices: ["🙈", "green", "🏀"])
+                }
+            }
             EditButton()
         }
         .onAppear { addSampleGames() }

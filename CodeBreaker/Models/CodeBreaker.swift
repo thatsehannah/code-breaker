@@ -9,12 +9,13 @@ import Foundation
 
 typealias Block = String
 
-@Observable class CodeBreaker { // whenever we have a class in our model, make it @Observable
+@Observable
+class CodeBreaker { // whenever we have a class in our model, make it @Observable
     var name: String
     var masterCode: Code
     var guess: Code
     var attempts: [Code] = []
-    let blockChoices: [Block]
+    var blockChoices: [Block]
     var startTime: Date = Date.now
     var endTime: Date?
     
